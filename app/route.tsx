@@ -48,7 +48,14 @@ export async function GET(req: NextRequest) {
           vro MIGHT be from {city.toLowerCase()} 😭✌️💔
         </div>
       ),
-      { width: 500, height: 500 }
+      {
+        width: 500,
+        height: 500,
+        headers: {
+          "Cache-Control": "no-store, max-age=0",
+          "Content-Type": "image/png",
+        },
+      }
     );
   } catch (err) {
     console.log(err);
@@ -77,7 +84,14 @@ export async function GET(req: NextRequest) {
           could not fetch location 😭
         </div>
       ),
-      { width: 500, height: 500 }
+      {
+        width: 500,
+        height: 500,
+        headers: {
+          "Cache-Control": "no-store, max-age=0",
+          "Content-Type": "image/png",
+        },
+      }
     );
   }
 }
