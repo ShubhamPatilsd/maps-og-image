@@ -1,1 +1,1 @@
-![locationimage](https://maps-og-image-next.vercel.app/)
+![locationimage](https://maps-og-image-next.vercel.app)
