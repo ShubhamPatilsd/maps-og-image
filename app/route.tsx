@@ -1,40 +1,27 @@
-import { ImageResponse } from "@vercel/og";
+import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
+  console.log("req what is up gang");
   try {
-    const url = new URL(req.url);
-    const ip = url.searchParams.get("ip") || "8.8.8.8"; // fallback
+    const ip =
+      req.headers.get("x-forwarded-for")?.split(",")[0] || // real client IP
+      req.headers.get("x-real-ip") || // fallback
+      "8.8.8.8";
 
-    // fetch location from free API
     const geoRes = await fetch(`http://ip-api.com/json/${ip}`);
     const geo = await geoRes.json();
-    // const geo = {
-    //   status: "success",
-    //   country: "United States",
-    //   countryCode: "US",
-    //   region: "CA",
-    //   regionName: "California",
-    //   city: "La Jolla",
-    //   zip: "92092",
-    //   lat: 32.8509,
-    //   lon: -117.2722,
-    //   timezone: "America/Los_Angeles",
-    //   isp: "University of California, San Diego",
-    //   org: "University of California, San Diego",
-    //   as: "AS7377 University of California, San Diego",
-    //   query: "128.54.148.246",
-    // };
 
     const city = geo.city ?? "somewhere";
     const lat = geo.lat ?? 0;
     const lon = geo.lon ?? 0;
 
-    // mapbox static map
     const mapUrl =
       `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/` +
       `${lon},${lat},10.4/500x500` +
       `?access_token=${process.env.MAPBOX_TOKEN}`;
+
+    console.log("mapUrl", mapUrl);
 
     return new ImageResponse(
       (
@@ -64,7 +51,7 @@ export async function GET(req: NextRequest) {
       { width: 500, height: 500 }
     );
   } catch (err) {
-    console.error(err);
+    console.log(err);
     return new ImageResponse(
       (
         <div
